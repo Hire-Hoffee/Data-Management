@@ -1,7 +1,10 @@
+import DataTable from "./components/DataTable/DataTable";
+import { Box } from "@mui/material";
+
 export default function Home() {
   return (
-    <div>
-      <h1>Data Management</h1>
-    </div>
+    <Box margin="50px">
+      <DataTable />
+    </Box>
   );
 }
