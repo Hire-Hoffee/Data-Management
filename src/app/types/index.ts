@@ -10,6 +10,14 @@ export type TEmployee = {
   companySigDate: string;
 };
 
+export type TApiResponse = {
+  error_code: number;
+  error_message: string;
+  data: TEmployee[];
+  profiling: string;
+  timings: null;
+};
+
 export type TCredentials = {
   username: string;
   password: string;

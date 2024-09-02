@@ -2,12 +2,14 @@
 
 import React from "react";
 import { Table, TableBody, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import { employeeData } from "@/app/utils/mockData";
 import * as SC from "./DataTable.style";
+import { TEmployee } from "@/app/types";
 
-type Props = {};
+type Props = {
+  employeeData: TEmployee[] | undefined;
+};
 
-function DataTable({}: Props) {
+function DataTable({ employeeData }: Props) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -25,19 +27,20 @@ function DataTable({}: Props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {employeeData.map((item) => (
-            <SC.CustomRow key={item.id}>
-              <SC.CustomCell sx={{ textWrap: "nowrap" }}>{item.id}</SC.CustomCell>
-              <SC.CustomCell>{item.documentStatus}</SC.CustomCell>
-              <SC.CustomCell>{item.employeeNumber}</SC.CustomCell>
-              <SC.CustomCell>{item.documentType}</SC.CustomCell>
-              <SC.CustomCell>{item.documentName}</SC.CustomCell>
-              <SC.CustomCell>{item.companySignatureName}</SC.CustomCell>
-              <SC.CustomCell>{item.employeeSignatureName}</SC.CustomCell>
-              <SC.CustomCell>{item.employeeSigDate}</SC.CustomCell>
-              <SC.CustomCell>{item.companySigDate}</SC.CustomCell>
-            </SC.CustomRow>
-          ))}
+          {employeeData &&
+            employeeData.map((item) => (
+              <SC.CustomRow key={item.id}>
+                <SC.CustomCell sx={{ textWrap: "nowrap" }}>{item.id}</SC.CustomCell>
+                <SC.CustomCell>{item.documentStatus}</SC.CustomCell>
+                <SC.CustomCell>{item.employeeNumber}</SC.CustomCell>
+                <SC.CustomCell>{item.documentType}</SC.CustomCell>
+                <SC.CustomCell>{item.documentName}</SC.CustomCell>
+                <SC.CustomCell>{item.companySignatureName}</SC.CustomCell>
+                <SC.CustomCell>{item.employeeSignatureName}</SC.CustomCell>
+                <SC.CustomCell>{item.employeeSigDate}</SC.CustomCell>
+                <SC.CustomCell>{item.companySigDate}</SC.CustomCell>
+              </SC.CustomRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
