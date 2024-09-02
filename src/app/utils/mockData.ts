@@ -1,16 +1,6 @@
-type Employee = {
-  id: string;
-  documentStatus: string;
-  employeeNumber: string;
-  documentType: string;
-  documentName: string;
-  companySignatureName: string;
-  employeeSignatureName: string;
-  employeeSigDate: string;
-  companySigDate: string;
-};
+import type { TEmployee } from "@/app/types/index";
 
-export const employeeData = [
+export const employeeData: TEmployee[] = [
   {
     id: "2d289308-13f6-4296-976a-239f3c5db6a5",
     documentStatus: "test1",
