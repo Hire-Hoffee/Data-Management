@@ -1,14 +1,9 @@
+"use client";
+
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
+import { Table, TableBody, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import { employeeData } from "@/app/utils/mockData";
+import * as SC from "./DataTable.style";
 
 type Props = {};
 
@@ -16,32 +11,32 @@ function DataTable({}: Props) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead color="primary">
+        <TableHead sx={{ backgroundColor: "#b8b7b7" }}>
           <TableRow>
-            <TableCell>id</TableCell>
-            <TableCell>documentStatus</TableCell>
-            <TableCell>employeeNumber</TableCell>
-            <TableCell>documentType</TableCell>
-            <TableCell>documentName</TableCell>
-            <TableCell>companySignatureName</TableCell>
-            <TableCell>employeeSignatureName</TableCell>
-            <TableCell>employeeSigDate</TableCell>
-            <TableCell>companySigDate</TableCell>
+            <SC.CustomCell isBold>id</SC.CustomCell>
+            <SC.CustomCell isBold>documentStatus</SC.CustomCell>
+            <SC.CustomCell isBold>employeeNumber</SC.CustomCell>
+            <SC.CustomCell isBold>documentType</SC.CustomCell>
+            <SC.CustomCell isBold>documentName</SC.CustomCell>
+            <SC.CustomCell isBold>companySignatureName</SC.CustomCell>
+            <SC.CustomCell isBold>employeeSignatureName</SC.CustomCell>
+            <SC.CustomCell isBold>employeeSigDate</SC.CustomCell>
+            <SC.CustomCell isBold>companySigDate</SC.CustomCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {employeeData.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>{item.documentStatus}</TableCell>
-              <TableCell>{item.employeeNumber}</TableCell>
-              <TableCell>{item.documentType}</TableCell>
-              <TableCell>{item.documentName}</TableCell>
-              <TableCell>{item.companySignatureName}</TableCell>
-              <TableCell>{item.employeeSignatureName}</TableCell>
-              <TableCell>{item.employeeSigDate}</TableCell>
-              <TableCell>{item.companySigDate}</TableCell>
-            </TableRow>
+            <SC.CustomRow key={item.id}>
+              <SC.CustomCell sx={{ textWrap: "nowrap" }}>{item.id}</SC.CustomCell>
+              <SC.CustomCell>{item.documentStatus}</SC.CustomCell>
+              <SC.CustomCell>{item.employeeNumber}</SC.CustomCell>
+              <SC.CustomCell>{item.documentType}</SC.CustomCell>
+              <SC.CustomCell>{item.documentName}</SC.CustomCell>
+              <SC.CustomCell>{item.companySignatureName}</SC.CustomCell>
+              <SC.CustomCell>{item.employeeSignatureName}</SC.CustomCell>
+              <SC.CustomCell>{item.employeeSigDate}</SC.CustomCell>
+              <SC.CustomCell>{item.companySigDate}</SC.CustomCell>
+            </SC.CustomRow>
           ))}
         </TableBody>
       </Table>
