@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Table, TableBody, TableContainer, TableHead, Paper } from "@mui/material";
-import { TEmployee } from "@/app/types";
+import { TEmployee } from "@/types";
 import CustomTableRow from "../CustomTableRow/CustomTableRow";
 
 type Props = {

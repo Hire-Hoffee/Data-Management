@@ -2,9 +2,9 @@
 
 import DataTable from "./components/DataTable/DataTable";
 import { Box } from "@mui/material";
-import { getEmployees } from "./api/requests";
+import { getEmployees } from "../api/requests";
 import { useEffect, useState } from "react";
-import { TEmployee } from "./types";
+import { TEmployee } from "../types";
 
 export default function Home() {
   const [employees, setEmployees] = useState<TEmployee[]>([]);

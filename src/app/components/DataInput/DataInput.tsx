@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "@mui/material";
 import { Controller, Control } from "react-hook-form";
-import { TEmployee } from "@/app/types";
+import { TEmployee } from "@/types";
 
 type Props = {
   disabled?: boolean;

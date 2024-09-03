@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import * as SC from "./CustomTableRow.style";
-import { TEmployee } from "@/app/types";
+import { TEmployee } from "@/types";
 import { EditNote, Delete, CheckCircle } from "@mui/icons-material";
 import { Button, Skeleton } from "@mui/material";
 import DataInput from "../DataInput/DataInput";
 import { useForm } from "react-hook-form";
-import { validateAndFormatDateTime } from "@/app/utils/utilsFunctions";
-import { updateEmployee } from "@/app/api/requests";
+import { validateAndFormatDateTime } from "@/utils/utilsFunctions";
+import { updateEmployee } from "@/api/requests";
 
 type Props = {
   employeeData: TEmployee | undefined;
