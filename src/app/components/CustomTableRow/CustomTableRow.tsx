@@ -4,6 +4,9 @@ import { TEmployee } from "@/app/types";
 import { EditNote, Delete, CheckCircle } from "@mui/icons-material";
 import { Button, Skeleton } from "@mui/material";
 import DataInput from "../DataInput/DataInput";
+import { useForm } from "react-hook-form";
+import { validateAndFormatDateTime } from "@/app/utils/utilsFunctions";
+import { updateEmployee } from "@/app/api/requests";
 
 type Props = {
   employeeData: TEmployee | undefined;
@@ -11,7 +14,31 @@ type Props = {
 };
 
 function CustomTableRow({ employeeData, isHeader }: Props) {
+  const { control, handleSubmit, getValues } = useForm<TEmployee>({
+    defaultValues: {
+      ...employeeData,
+      employeeSigDate: validateAndFormatDateTime(employeeData?.employeeSigDate).dateForInput,
+      companySigDate: validateAndFormatDateTime(employeeData?.companySigDate).dateForInput,
+    },
+  });
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleEdit = async () => {
+    setIsDisabled(false);
+
+    if (!isDisabled) {
+      setIsLoading(true);
+      const data = getValues();
+      await updateEmployee(data);
+      setIsLoading(false);
+      setIsDisabled(true);
+    }
+  };
+
+  if (isLoading) {
+    return <CustomTableRow.Skeleton />;
+  }
 
   return (
     <>
@@ -32,11 +59,22 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
           {employeeData &&
             Object.entries(employeeData).map(([key, value], i) => (
               <SC.CustomCell key={i}>
-                {<DataInput value={value} disabled={isDisabled} />}
+                {
+                  <DataInput
+                    control={control}
+                    name={key as keyof TEmployee}
+                    disabled={isDisabled}
+                    type={
+                      key === "employeeSigDate" || key === "companySigDate"
+                        ? "datetime-local"
+                        : "text"
+                    }
+                  />
+                }
               </SC.CustomCell>
             ))}
           <SC.CustomCell>
-            <Button color="inherit" onClick={() => setIsDisabled(!isDisabled)}>
+            <Button color="inherit" onClick={handleEdit}>
               {isDisabled ? <EditNote /> : <CheckCircle stroke="green" />}
             </Button>
             <Button color="error">

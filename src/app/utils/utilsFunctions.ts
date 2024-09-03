@@ -1,10 +1,17 @@
-export function validateAndFormatDateTime(dateString: string) {
+export function validateAndFormatDateTime(dateString: string | undefined) {
+  if (!dateString) {
+    return {
+      isValid: false,
+      dateForInput: dateString,
+    };
+  }
+
   const date = new Date(dateString);
 
   if (date.toString() === "Invalid Date") {
     return {
       isValid: false,
-      dateForInput: null,
+      dateForInput: dateString,
     };
   }
 

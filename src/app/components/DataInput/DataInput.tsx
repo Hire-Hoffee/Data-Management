@@ -1,21 +1,31 @@
 import React from "react";
 import { Input } from "@mui/material";
-import { validateAndFormatDateTime } from "@/app/utils/utilsFunctions";
+import { Controller, Control } from "react-hook-form";
+import { TEmployee } from "@/app/types";
 
 type Props = {
-  value: string;
   disabled?: boolean;
+  control: Control<TEmployee>;
+  name: keyof TEmployee;
+  type?: string;
 };
 
-function DataInput({ value, disabled }: Props) {
-  const { isValid, dateForInput } = validateAndFormatDateTime(value);
-
+function DataInput({ disabled, control, name, type = "text" }: Props) {
   return (
-    <Input
-      value={isValid ? dateForInput : value}
-      disabled={disabled}
-      type={isValid ? "datetime-local" : "text"}
-      disableUnderline={disabled}
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required: true }}
+      render={({ field: { value, onChange, onBlur } }) => (
+        <Input
+          value={value}
+          disabled={disabled}
+          type={type}
+          disableUnderline={disabled}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
+      )}
     />
   );
 }

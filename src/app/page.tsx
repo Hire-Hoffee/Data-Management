@@ -20,7 +20,9 @@ export default function Home() {
 
   return (
     <Box margin="30px">
-      <DataTable employeeData={employees} />
+      <DataTable
+        employeeData={employees.sort((a, b) => (a.documentName > b.documentName ? 1 : -1))}
+      />
     </Box>
   );
 }
