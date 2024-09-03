@@ -15,6 +15,7 @@ function DataInput({ value, disabled }: Props) {
       value={isValid ? dateForInput : value}
       disabled={disabled}
       type={isValid ? "datetime-local" : "text"}
+      disableUnderline={disabled}
     />
   );
 }
