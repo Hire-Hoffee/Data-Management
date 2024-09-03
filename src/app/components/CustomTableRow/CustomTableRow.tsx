@@ -6,16 +6,18 @@ import { Button, Skeleton } from "@mui/material";
 import DataInput from "../DataInput/DataInput";
 import { useForm } from "react-hook-form";
 import { validateAndFormatDateTime } from "@/utils/utilsFunctions";
-import { updateEmployee, deleteEmployee } from "@/api/requests";
+import { updateEmployee, deleteEmployee, createEmployee } from "@/api/requests";
 import { useAppDispatch } from "@/store";
-import { filterData } from "@/store/dataSlice";
+import { filterData, createNewItem, addItem } from "@/store/dataSlice";
 
 type Props = {
   employeeData: TEmployee | undefined;
   isHeader?: boolean;
+  disabled?: boolean;
+  newItem?: boolean;
 };
 
-function CustomTableRow({ employeeData, isHeader }: Props) {
+function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
   const { control, handleSubmit, getValues } = useForm<TEmployee>({
     defaultValues: {
       ...employeeData,
@@ -25,12 +27,20 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
   });
   const dispatch = useAppDispatch();
 
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(disabled ?? true);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleCreate = async () => {
+    const data = getValues();
+    delete data.id;
+    const newItem = (await createEmployee(data)).data;
+    dispatch(createNewItem(false));
+    dispatch(addItem(newItem.data));
+    setIsDisabled(true);
+  };
 
   const handleEdit = async () => {
     setIsDisabled(false);
-
     if (!isDisabled) {
       setIsLoading(true);
       const data = getValues();
@@ -41,6 +51,10 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
   };
 
   const handleDelete = async () => {
+    if (newItem) {
+      dispatch(createNewItem(false));
+      return;
+    }
     const data = getValues();
     if (data.id) {
       await deleteEmployee(data.id);
@@ -59,11 +73,11 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
           {employeeData &&
             Object.entries(employeeData).map(([key, value], i) => (
               <SC.CustomCell sx={{ backgroundColor: "#b8b7b7", fontWeight: "bold" }} key={i}>
-                {key}
+                {key.toUpperCase()}
               </SC.CustomCell>
             ))}
           <SC.CustomCell sx={{ backgroundColor: "#b8b7b7", fontWeight: "bold" }}>
-            Edit
+            EDIT
           </SC.CustomCell>
         </SC.CustomRow>
       ) : (
@@ -86,7 +100,7 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
               </SC.CustomCell>
             ))}
           <SC.CustomCell>
-            <Button color="inherit" onClick={handleEdit}>
+            <Button color="inherit" onClick={newItem ? handleCreate : handleEdit}>
               {isDisabled ? <EditNote /> : <CheckCircle stroke="green" />}
             </Button>
             <Button color="error" onClick={handleDelete}>

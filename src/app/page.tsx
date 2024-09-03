@@ -1,11 +1,12 @@
 "use client";
 
 import DataTable from "./components/DataTable/DataTable";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { getEmployees } from "../api/requests";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setData } from "@/store/dataSlice";
+import { setData, createNewItem } from "@/store/dataSlice";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 export default function Home() {
   const employees = useAppSelector((state) => state.data.companyData);
@@ -22,6 +23,11 @@ export default function Home() {
 
   return (
     <Box margin="30px">
+      <Box display={"flex"} justifyContent={"flex-end"} marginBottom="5px">
+        <Button color="inherit" onClick={() => dispatch(createNewItem(true))}>
+          <AddCircleOutlineIcon fontSize="large" />
+        </Button>
+      </Box>
       <DataTable employeeData={employees} />
     </Box>
   );
