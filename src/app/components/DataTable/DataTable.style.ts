@@ -1,6 +1,7 @@
 import { styled, TableCell, TableRow } from "@mui/material";
 
-export const CustomCell = styled(TableCell)<{ isBold?: boolean }>(({ isBold }) => ({
+export const CustomCell = styled(TableCell)<{ isBold?: boolean }>(({ isBold, ...rest }) => ({
+  ...rest,
   whiteSpace: "nowrap",
   fontWeight: isBold ? "bold" : "normal",
 }));
