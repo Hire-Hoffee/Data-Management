@@ -6,7 +6,9 @@ import { Button, Skeleton } from "@mui/material";
 import DataInput from "../DataInput/DataInput";
 import { useForm } from "react-hook-form";
 import { validateAndFormatDateTime } from "@/utils/utilsFunctions";
-import { updateEmployee } from "@/api/requests";
+import { updateEmployee, deleteEmployee } from "@/api/requests";
+import { useAppDispatch } from "@/store";
+import { filterData } from "@/store/dataSlice";
 
 type Props = {
   employeeData: TEmployee | undefined;
@@ -21,6 +23,8 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
       companySigDate: validateAndFormatDateTime(employeeData?.companySigDate).dateForInput,
     },
   });
+  const dispatch = useAppDispatch();
+
   const [isDisabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +37,14 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
       await updateEmployee(data);
       setIsLoading(false);
       setIsDisabled(true);
+    }
+  };
+
+  const handleDelete = async () => {
+    const data = getValues();
+    if (data.id) {
+      await deleteEmployee(data.id);
+      dispatch(filterData(data.id));
     }
   };
 
@@ -77,7 +89,7 @@ function CustomTableRow({ employeeData, isHeader }: Props) {
             <Button color="inherit" onClick={handleEdit}>
               {isDisabled ? <EditNote /> : <CheckCircle stroke="green" />}
             </Button>
-            <Button color="error">
+            <Button color="error" onClick={handleDelete}>
               <Delete />
             </Button>
           </SC.CustomCell>

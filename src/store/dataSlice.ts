@@ -13,9 +13,12 @@ export const dataSlice = createSlice({
       const sorted = action.payload.sort((a, b) => (a.documentName > b.documentName ? 1 : -1));
       state.companyData = sorted;
     },
+    filterData(state, action: PayloadAction<string>) {
+      state.companyData = state.companyData.filter((item) => item.id !== action.payload);
+    },
   },
 });
 
-export const { setData } = dataSlice.actions;
+export const { setData, filterData } = dataSlice.actions;
 
 export default dataSlice.reducer;
