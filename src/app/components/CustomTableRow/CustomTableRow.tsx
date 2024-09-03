@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import * as SC from "./CustomTableRow.style";
 import { TEmployee } from "@/app/types";
-import { EditNote, Delete } from "@mui/icons-material";
+import { EditNote, Delete, CheckCircle } from "@mui/icons-material";
 import { Button, Skeleton } from "@mui/material";
+import DataInput from "../DataInput/DataInput";
 
 type Props = {
   employeeData: TEmployee | undefined;
@@ -10,29 +11,41 @@ type Props = {
 };
 
 function CustomTableRow({ employeeData, isHeader }: Props) {
+  const [isDisabled, setIsDisabled] = useState(true);
+
   return (
-    <SC.CustomRow>
-      {employeeData &&
-        Object.entries(employeeData).map(([key, value], i) => (
-          <SC.CustomCell sx={{ backgroundColor: isHeader ? "#b8b7b7" : "" }} key={i}>
-            {isHeader ? key : value}
+    <>
+      {isHeader ? (
+        <SC.CustomRow>
+          {employeeData &&
+            Object.entries(employeeData).map(([key, value], i) => (
+              <SC.CustomCell sx={{ backgroundColor: "#b8b7b7", fontWeight: "bold" }} key={i}>
+                {key}
+              </SC.CustomCell>
+            ))}
+          <SC.CustomCell sx={{ backgroundColor: "#b8b7b7", fontWeight: "bold" }}>
+            Edit
           </SC.CustomCell>
-        ))}
-      <SC.CustomCell sx={{ backgroundColor: isHeader ? "#b8b7b7" : "" }}>
-        {!isHeader ? (
-          <>
-            <Button color="inherit">
-              <EditNote />
+        </SC.CustomRow>
+      ) : (
+        <SC.CustomRow>
+          {employeeData &&
+            Object.entries(employeeData).map(([key, value], i) => (
+              <SC.CustomCell key={i}>
+                {<DataInput value={value} disabled={isDisabled} />}
+              </SC.CustomCell>
+            ))}
+          <SC.CustomCell>
+            <Button color="inherit" onClick={() => setIsDisabled(!isDisabled)}>
+              {isDisabled ? <EditNote /> : <CheckCircle stroke="green" />}
             </Button>
             <Button color="error">
               <Delete />
             </Button>
-          </>
-        ) : (
-          <>Edit</>
-        )}
-      </SC.CustomCell>
-    </SC.CustomRow>
+          </SC.CustomCell>
+        </SC.CustomRow>
+      )}
+    </>
   );
 }
 

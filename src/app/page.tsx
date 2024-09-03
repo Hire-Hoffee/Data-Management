@@ -19,7 +19,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box margin="50px">
+    <Box margin="30px">
       <DataTable employeeData={employees} />
     </Box>
   );
