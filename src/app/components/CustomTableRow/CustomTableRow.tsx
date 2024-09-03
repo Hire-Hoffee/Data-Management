@@ -31,12 +31,14 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreate = async () => {
+    setIsLoading(true);
     const data = getValues();
     delete data.id;
     const newItem = (await createEmployee(data)).data;
     dispatch(createNewItem(false));
     dispatch(addItem(newItem.data));
     setIsDisabled(true);
+    setIsLoading(false);
   };
 
   const handleEdit = async () => {
@@ -63,7 +65,9 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
   };
 
   if (isLoading) {
-    return <CustomTableRow.Skeleton />;
+    return (
+      <CustomTableRow.Skeleton colSpan={employeeData ? Object.keys(employeeData).length : 1} />
+    );
   }
 
   return (
@@ -113,11 +117,17 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
   );
 }
 
-CustomTableRow.Skeleton = function RowSkeleton({ header }: { header?: boolean }) {
+CustomTableRow.Skeleton = function RowSkeleton({
+  header,
+  colSpan,
+}: {
+  header?: boolean;
+  colSpan?: number;
+}) {
   return (
     <>
       <SC.CustomRow>
-        <SC.CustomCell sx={{ backgroundColor: header ? "#b8b7b7" : "" }}>
+        <SC.CustomCell sx={{ backgroundColor: header ? "#b8b7b7" : "" }} colSpan={colSpan ?? 1}>
           <Skeleton height={50} />
         </SC.CustomCell>
       </SC.CustomRow>
