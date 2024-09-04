@@ -30,36 +30,29 @@ export default function Home() {
     }
   };
 
-  if (localStorage.getItem("token")) {
-    dispatch(setToken(localStorage.getItem("token")!));
-  }
-
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (localStorage.getItem("token")) {
+      dispatch(setToken(localStorage.getItem("token")!));
+      fetchEmployees();
+    }
+    if (!localStorage.getItem("token")) {
       router.push("/auth");
       return;
     }
-    fetchEmployees();
-  }, [isLoggedIn]);
-
-  if (!isLoggedIn) {
-    return (
-      <Box margin="30px">
-        <Typography variant="h5" textAlign="center" marginTop="20px">
-          Чтобы просмотреть данные войдите в аккаунт
-        </Typography>
-      </Box>
-    );
-  }
+  }, []);
 
   return (
-    <Box margin="30px">
-      <Box display={"flex"} justifyContent={"flex-end"} marginBottom="5px">
-        <Button color="inherit" onClick={() => dispatch(createNewItem(true))}>
-          <AddCircleOutlineIcon fontSize="large" />
-        </Button>
-      </Box>
-      <DataTable employeeData={employees} />
-    </Box>
+    <>
+      {isLoggedIn && (
+        <Box margin="30px">
+          <Box display={"flex"} justifyContent={"flex-end"} marginBottom="5px">
+            <Button color="inherit" onClick={() => dispatch(createNewItem(true))}>
+              <AddCircleOutlineIcon fontSize="large" />
+            </Button>
+          </Box>
+          <DataTable employeeData={employees} />
+        </Box>
+      )}
+    </>
   );
 }
