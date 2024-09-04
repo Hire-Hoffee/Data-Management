@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Тестовое задание: Frontend
 
-## Getting Started
+## Задача
 
-First, run the development server:
+Реализовать небольшое SPA-приложение, взаимодействующее с сервером.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Требования:
+
+- Обязательное использование **React**.
+- Использование **TypeScript** будет плюсом.
+- Желательно использование **Material UI** ([ссылка](https://mui.com/)).
+
+### Структура приложения:
+
+Приложение должно состоять из следующих страниц:
+
+1. **Страница авторизации**
+2. **Таблица с данными, полученными с сервера**
+
+### Функциональные требования:
+
+- Неавторизованный пользователь при открытии приложения должен получить предложение авторизоваться.
+- После успешной авторизации пользователь должен увидеть таблицу с данными.
+- После перезагрузки страницы пользователь должен оставаться авторизованным.
+- Возможность добавить новую запись в таблицу.
+  - Новая запись должна сразу появляться в таблице.
+- Возможность удалить запись.
+  - Удаленная запись должна сразу исчезнуть из таблицы.
+- Возможность изменить запись.
+  - Изменения должны сразу отображаться в таблице.
+- Приложение должно корректно сообщать пользователю об ошибках заполнения форм или неудачных запросах к серверу.
+- Во время получения и отправки данных на сервер пользователю должны показываться индикаторы процесса (прогресс-бары, спиннеры).
+
+### Дополнительные пожелания:
+
+- Хочется увидеть не только работающее приложение, но и идеи по архитектуре и расширяемости приложения.
+- Внешний вид приложения полностью свободен для креативности исполнителя.
+- Исходный код выполненного задания нужно выложить в публичный репозиторий на **GitHub**.
+- Будет приятно, если собранное приложение будет доступно на **GitHub Pages**.
+
+## Документация к API-сервера
+
+### Данные для авторизации:
+
+```json
+{
+  "username": "user{N}",
+  "password": "password"
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **user{N}** – вместо N нужно ввести число, например: `user1`, `user2`, … `user33`.
+- **password** – одинаков для всех логинов. В случае его отличия сервер вернёт ошибку.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Хост:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+`HOST = 'https://test.v5.pryaniky.com'`
 
-## Learn More
+### Запросы:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Запрос для авторизации** (метод - `POST`):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   - URL: `{HOST}/ru/data/v3/testmethods/docs/login`
+   - Формат данных: `JSON`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   Пример данных:
 
-## Deploy on Vercel
+   ```json
+   {
+     "username": "user13",
+     "password": "password"
+   }
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   В ответе сервер вернет токен для аутентификации.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. **Аутентификация запросов**:
+
+   В заголовках запроса необходимо передавать токен, полученный при авторизации.
+
+   Пример заголовка:
+
+   ```plaintext
+   'x-auth': 'supersecrettoken_for_user8'
+   ```
+
+   **Токен** не имеет срока действия.
+
+3. **Запрос для получения массива данных для таблицы** (метод - `GET`):
+
+   - URL: `{HOST}/ru/data/v3/testmethods/docs/userdocs/get`
+
+   В случае успешного выполнения запроса в ответе будут данные об ошибке и массив с данными для таблицы. Массив данных находится в свойстве `data`.
+
+   Необходимо вывести следующие свойства:
+
+   - `companySigDate`
+   - `companySignatureName`
+   - `documentName`
+   - `documentStatus`
+   - `documentType`
+   - `employeeNumber`
+   - `employeeSigDate`
+   - `employeeSignatureName`
+
+4. **Запрос для добавления записи** (метод - `POST`):
+
+   - URL: `{HOST}/ru/data/v3/testmethods/docs/userdocs/create`
+   - Формат данных: `JSON`
+
+   Пример данных:
+
+   ```json
+   {
+     "companySigDate": "2022-12-23T11:19:27.017Z",
+     "companySignatureName": "test",
+     "documentName": "test",
+     "documentStatus": "test",
+     "documentType": "test",
+     "employeeNumber": "test",
+     "employeeSigDate": "2022-12-23T11:19:27.017Z",
+     "employeeSignatureName": "test"
+   }
+   ```
+
+   В случае успешного выполнения запроса ответ будет содержать созданную запись и иметь HTTP STATUS CODE 200.
+
+5. **Запрос для удаления записи** (метод - `POST`):
+
+   - URL: `{HOST}/ru/data/v3/testmethods/docs/userdocs/delete/{id}`
+
+   Где **id** – это идентификатор записи, полученный с данными.
+
+   В случае успешного выполнения запроса в ответе свойство `error_code` будет иметь значение `0`.
+
+6. **Запрос для изменения записи** (метод - `POST`):
+
+   - URL: `{HOST}/ru/data/v3/testmethods/docs/userdocs/set/{id}`
+
+   Где **id** – это идентификатор записи, полученный с данными.
+
+   Данные передаются в формате `JSON`, аналогичном тем, что используются при создании записи.
+
+   В случае успешного выполнения запроса в ответе свойство `error_code` будет иметь значение `0`, а свойство `data` будет содержать измененный объект.
