@@ -5,7 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { getEmployees } from "../api/requests";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setData, createNewItem, setToken } from "@/store/dataSlice";
+import { setData, createNewItem, setToken, setNotification } from "@/store/dataSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useRouter } from "next/navigation";
 
@@ -16,8 +16,18 @@ export default function Home() {
   const router = useRouter();
 
   const fetchEmployees = async () => {
-    const response = (await getEmployees()).data;
-    dispatch(setData(response.data));
+    try {
+      const response = (await getEmployees()).data;
+
+      if (response.error_code !== 0) {
+        dispatch(setNotification("Произошла ошибка"));
+        return;
+      }
+
+      dispatch(setData(response.data));
+    } catch (error) {
+      dispatch(setNotification("Произошла ошибка"));
+    }
   };
 
   if (localStorage.getItem("token")) {

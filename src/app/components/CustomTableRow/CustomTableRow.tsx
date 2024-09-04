@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { validateAndFormatDateTime } from "@/utils/utilsFunctions";
 import { updateEmployee, deleteEmployee, createEmployee } from "@/api/requests";
 import { useAppDispatch } from "@/store";
-import { filterData, createNewItem, addItem } from "@/store/dataSlice";
+import { filterData, createNewItem, addItem, setNotification } from "@/store/dataSlice";
 import { validationSchema } from "./CustomTableRowTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -24,6 +24,7 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
     control,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors },
   } = useForm<TEmployee>({
     defaultValues: {
@@ -39,23 +40,49 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
   const [isDisabled, setIsDisabled] = useState(disabled ?? true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreate = async (data: TEmployee) => {
-    setIsLoading(true);
-    delete data.id;
-    const newItem = (await createEmployee(data)).data;
-    dispatch(createNewItem(false));
-    dispatch(addItem(newItem.data));
-    setIsDisabled(true);
+  const handleError = () => {
+    dispatch(setNotification("Произошла ошибка"));
+    reset();
     setIsLoading(false);
   };
 
-  const handleEdit = async (data: TEmployee) => {
-    setIsDisabled(!isDisabled);
-    if (!isDisabled) {
+  const handleCreate = async (data: TEmployee) => {
+    try {
       setIsLoading(true);
-      await updateEmployee(data);
-      setIsLoading(false);
+      delete data.id;
+      const response = (await createEmployee(data)).data;
+
+      if (response.error_code !== 0) {
+        handleError();
+        return;
+      }
+
+      dispatch(createNewItem(false));
+      dispatch(addItem(response.data));
       setIsDisabled(true);
+      setIsLoading(false);
+    } catch (error) {
+      handleError();
+    }
+  };
+
+  const handleEdit = async (data: TEmployee) => {
+    try {
+      setIsDisabled(!isDisabled);
+      if (!isDisabled) {
+        setIsLoading(true);
+        const response = (await updateEmployee(data)).data;
+
+        if (response.error_code !== 0) {
+          handleError();
+          return;
+        }
+
+        setIsLoading(false);
+        setIsDisabled(true);
+      }
+    } catch (error) {
+      handleError();
     }
   };
 

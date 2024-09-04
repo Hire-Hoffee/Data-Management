@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authValidationSchema } from "./AuthFormTypes";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store";
-import { setToken } from "@/store/dataSlice";
+import { setToken, setNotification } from "@/store/dataSlice";
 import CircularProgress from "@mui/material/CircularProgress";
 
 type Props = {};
@@ -25,6 +25,7 @@ function AuthForm({}: Props) {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<TCredentials>({
     defaultValues: {
@@ -39,13 +40,29 @@ function AuthForm({}: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAuth = async (data: TCredentials) => {
-    setIsLoading(true);
-    const res = await auth(data);
-    localStorage.setItem("token", res.data.data.token);
-    dispatch(setToken(res.data.data.token));
+  const handleError = () => {
+    dispatch(setNotification("Произошла ошибка"));
+    reset();
     setIsLoading(false);
-    router.push("/");
+  };
+
+  const handleAuth = async (data: TCredentials) => {
+    try {
+      setIsLoading(true);
+      const response = (await auth(data)).data;
+
+      if (response.error_code !== 0) {
+        handleError();
+        return;
+      }
+
+      localStorage.setItem("token", response.data.token);
+      dispatch(setToken(response.data.token));
+      setIsLoading(false);
+      router.push("/");
+    } catch (error) {
+      handleError();
+    }
   };
 
   return (

@@ -1,12 +1,17 @@
 "use client";
 
 import React from "react";
-import { Box, AppBar, Typography, Toolbar, Button } from "@mui/material";
+import { Box, AppBar, Typography, Toolbar, Button, Snackbar, Alert } from "@mui/material";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setNotification } from "@/store/dataSlice";
 
 type Props = {};
 
 function Header({}: Props) {
+  const dispatch = useAppDispatch();
+  const notification = useAppSelector((state) => state.data.notification);
+
   const handleExit = () => {
     localStorage.removeItem("token");
     window.location.reload();
@@ -25,6 +30,15 @@ function Header({}: Props) {
           </Button>
         </Toolbar>
       </AppBar>
+      <Snackbar
+        open={!!notification}
+        autoHideDuration={3000}
+        onClose={() => dispatch(setNotification(null))}
+      >
+        <Alert variant="outlined" severity="error">
+          {notification}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

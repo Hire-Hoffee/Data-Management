@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TEmployee } from "@/types";
 
-const initialState: { companyData: TEmployee[]; newItem: boolean; token: string } = {
+const initialState: {
+  companyData: TEmployee[];
+  newItem: boolean;
+  token: string;
+  notification: string | null;
+} = {
   companyData: [],
   newItem: false,
   token: "",
+  notification: null,
 };
 
 export const dataSlice = createSlice({
@@ -30,9 +36,13 @@ export const dataSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
     },
+    setNotification(state, action: PayloadAction<string | null>) {
+      state.notification = action.payload;
+    },
   },
 });
 
-export const { setData, filterData, createNewItem, addItem, setToken } = dataSlice.actions;
+export const { setData, filterData, createNewItem, addItem, setToken, setNotification } =
+  dataSlice.actions;
 
 export default dataSlice.reducer;
