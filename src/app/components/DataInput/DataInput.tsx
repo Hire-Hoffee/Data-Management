@@ -21,9 +21,9 @@ function DataInput({ disabled, control, name, type = "text", errors }: Props) {
         <Box position="relative">
           <Input
             value={value}
-            disabled={disabled}
+            disabled={name === "id" ? true : disabled}
             type={type}
-            disableUnderline={disabled}
+            disableUnderline={name === "id" ? true : disabled}
             onChange={onChange}
             onBlur={onBlur}
           />
