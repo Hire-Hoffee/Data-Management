@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 
 export const CustomCell = styled(TableCell)`
   white-space: nowrap;
-  text-align: center;
 
   .MuiInput-root {
     font-weight: bolder;

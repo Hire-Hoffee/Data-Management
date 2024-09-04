@@ -1,6 +1,6 @@
 import React from "react";
-import { Input } from "@mui/material";
-import { Controller, Control } from "react-hook-form";
+import { Input, Typography, Box } from "@mui/material";
+import { Controller, Control, FieldErrors } from "react-hook-form";
 import { TEmployee } from "@/types";
 
 type Props = {
@@ -8,23 +8,31 @@ type Props = {
   control: Control<TEmployee>;
   name: keyof TEmployee;
   type?: string;
+  errors?: FieldErrors<TEmployee>;
 };
 
-function DataInput({ disabled, control, name, type = "text" }: Props) {
+function DataInput({ disabled, control, name, type = "text", errors }: Props) {
   return (
     <Controller
       name={name}
       control={control}
       rules={{ required: true }}
       render={({ field: { value, onChange, onBlur } }) => (
-        <Input
-          value={value}
-          disabled={disabled}
-          type={type}
-          disableUnderline={disabled}
-          onChange={onChange}
-          onBlur={onBlur}
-        />
+        <Box position="relative">
+          <Input
+            value={value}
+            disabled={disabled}
+            type={type}
+            disableUnderline={disabled}
+            onChange={onChange}
+            onBlur={onBlur}
+          />
+          {errors?.[name] && (
+            <Typography color="error" position="absolute" fontSize="12px">
+              {errors?.[name]?.message}
+            </Typography>
+          )}
+        </Box>
       )}
     />
   );

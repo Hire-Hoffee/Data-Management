@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as SC from "./CustomTableRow.style";
 import { TEmployee } from "@/types";
 import { EditNote, Delete, CheckCircle } from "@mui/icons-material";
@@ -9,6 +9,8 @@ import { validateAndFormatDateTime } from "@/utils/utilsFunctions";
 import { updateEmployee, deleteEmployee, createEmployee } from "@/api/requests";
 import { useAppDispatch } from "@/store";
 import { filterData, createNewItem, addItem } from "@/store/dataSlice";
+import { validationSchema } from "./CustomTableRowTypes";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
   employeeData: TEmployee | undefined;
@@ -18,21 +20,27 @@ type Props = {
 };
 
 function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
-  const { control, handleSubmit, getValues } = useForm<TEmployee>({
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<TEmployee>({
     defaultValues: {
       ...employeeData,
       employeeSigDate: validateAndFormatDateTime(employeeData?.employeeSigDate).dateForInput,
       companySigDate: validateAndFormatDateTime(employeeData?.companySigDate).dateForInput,
     },
+    resolver: zodResolver(validationSchema),
+    mode: "all",
   });
   const dispatch = useAppDispatch();
 
   const [isDisabled, setIsDisabled] = useState(disabled ?? true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreate = async () => {
+  const handleCreate = async (data: TEmployee) => {
     setIsLoading(true);
-    const data = getValues();
     delete data.id;
     const newItem = (await createEmployee(data)).data;
     dispatch(createNewItem(false));
@@ -41,11 +49,10 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
     setIsLoading(false);
   };
 
-  const handleEdit = async () => {
-    setIsDisabled(false);
+  const handleEdit = async (data: TEmployee) => {
+    setIsDisabled(!isDisabled);
     if (!isDisabled) {
       setIsLoading(true);
-      const data = getValues();
       await updateEmployee(data);
       setIsLoading(false);
       setIsDisabled(true);
@@ -59,8 +66,10 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
     }
     const data = getValues();
     if (data.id) {
+      setIsLoading(true);
       await deleteEmployee(data.id);
       dispatch(filterData(data.id));
+      setIsLoading(false);
     }
   };
 
@@ -80,7 +89,9 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
                 {key.toUpperCase()}
               </SC.CustomCell>
             ))}
-          <SC.CustomCell sx={{ backgroundColor: "#b8b7b7", fontWeight: "bold" }}>
+          <SC.CustomCell
+            sx={{ backgroundColor: "#b8b7b7", fontWeight: "bold", textAlign: "center" }}
+          >
             EDIT
           </SC.CustomCell>
         </SC.CustomRow>
@@ -94,6 +105,7 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
                     control={control}
                     name={key as keyof TEmployee}
                     disabled={isDisabled}
+                    errors={errors}
                     type={
                       key === "employeeSigDate" || key === "companySigDate"
                         ? "datetime-local"
@@ -104,7 +116,7 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
               </SC.CustomCell>
             ))}
           <SC.CustomCell>
-            <Button color="inherit" onClick={newItem ? handleCreate : handleEdit}>
+            <Button color="inherit" onClick={handleSubmit(newItem ? handleCreate : handleEdit)}>
               {isDisabled ? <EditNote /> : <CheckCircle stroke="green" />}
             </Button>
             <Button color="error" onClick={handleDelete}>
