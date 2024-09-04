@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as SC from "./CustomTableRow.style";
 import { TEmployee } from "@/types";
 import { EditNote, Delete, CheckCircle } from "@mui/icons-material";

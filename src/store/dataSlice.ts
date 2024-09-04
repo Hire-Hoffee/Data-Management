@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TEmployee } from "@/types";
 
-const initialState: { companyData: TEmployee[]; newItem: boolean } = {
+const initialState: { companyData: TEmployee[]; newItem: boolean; token: string } = {
   companyData: [],
   newItem: false,
+  token: "",
 };
 
 export const dataSlice = createSlice({
@@ -26,9 +27,12 @@ export const dataSlice = createSlice({
       );
       state.companyData = newSortedData;
     },
+    setToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
+    },
   },
 });
 
-export const { setData, filterData, createNewItem, addItem } = dataSlice.actions;
+export const { setData, filterData, createNewItem, addItem, setToken } = dataSlice.actions;
 
 export default dataSlice.reducer;

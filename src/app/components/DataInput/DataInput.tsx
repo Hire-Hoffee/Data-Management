@@ -1,17 +1,29 @@
 import React from "react";
 import { Input, Typography, Box } from "@mui/material";
-import { Controller, Control, FieldErrors } from "react-hook-form";
-import { TEmployee } from "@/types";
+import { Controller, Control, FieldErrors, FieldValues, Path } from "react-hook-form";
 
-type Props = {
+type Props<T extends FieldValues> = {
   disabled?: boolean;
-  control: Control<TEmployee>;
-  name: keyof TEmployee;
+  control: Control<T>;
+  name: Path<T>;
   type?: string;
-  errors?: FieldErrors<TEmployee>;
+  errors?: FieldErrors<T>;
+  placeholder?: string;
+  sx?: React.CSSProperties;
+  disableUnderline?: boolean;
 };
 
-function DataInput({ disabled, control, name, type = "text", errors }: Props) {
+function DataInput<T extends FieldValues>({
+  disabled,
+  control,
+  name,
+  type = "text",
+  errors,
+  placeholder,
+  sx,
+  disableUnderline,
+}: Props<T>) {
+  const errorMessage = errors?.[name]?.message;
   return (
     <Controller
       name={name}
@@ -23,13 +35,15 @@ function DataInput({ disabled, control, name, type = "text", errors }: Props) {
             value={value}
             disabled={name === "id" ? true : disabled}
             type={type}
-            disableUnderline={name === "id" ? true : disabled}
+            disableUnderline={disableUnderline ?? name === "id" ? true : disabled}
             onChange={onChange}
             onBlur={onBlur}
+            placeholder={placeholder}
+            sx={sx}
           />
-          {errors?.[name] && (
+          {errorMessage && typeof errorMessage === "string" && (
             <Typography color="error" position="absolute" fontSize="12px">
-              {errors?.[name]?.message}
+              {errorMessage}
             </Typography>
           )}
         </Box>

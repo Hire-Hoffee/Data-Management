@@ -22,3 +22,13 @@ export type TCredentials = {
   username: string;
   password: string;
 };
+
+export type TAuthResponse = {
+  error_code: number;
+  error_message: string;
+  data: {
+    token: string;
+  };
+  profiling: string;
+  timings: null;
+};
