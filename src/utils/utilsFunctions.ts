@@ -22,3 +22,8 @@ export function validateAndFormatDateTime(dateString: string | undefined) {
     dateForInput: dateForInput,
   };
 }
+
+export const convertLocalToUTC = (dateString: string) => {
+  const localDate = new Date(dateString);
+  return new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
+};

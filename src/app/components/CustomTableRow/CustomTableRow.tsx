@@ -5,7 +5,7 @@ import { EditNote, Delete, CheckCircle } from "@mui/icons-material";
 import { Button, Skeleton } from "@mui/material";
 import DataInput from "../DataInput/DataInput";
 import { useForm } from "react-hook-form";
-import { validateAndFormatDateTime } from "@/utils/utilsFunctions";
+import { validateAndFormatDateTime, convertLocalToUTC } from "@/utils/utilsFunctions";
 import { updateEmployee, deleteEmployee, createEmployee } from "@/api/requests";
 import { useAppDispatch } from "@/store";
 import { filterData, createNewItem, addItem, setNotification } from "@/store/dataSlice";
@@ -50,6 +50,10 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
     try {
       setIsLoading(true);
       delete data.id;
+
+      data.employeeSigDate = convertLocalToUTC(data.employeeSigDate);
+      data.companySigDate = convertLocalToUTC(data.companySigDate);
+
       const response = (await createEmployee(data)).data;
 
       if (response.error_code !== 0) {
@@ -71,6 +75,10 @@ function CustomTableRow({ employeeData, isHeader, disabled, newItem }: Props) {
       setIsDisabled(!isDisabled);
       if (!isDisabled) {
         setIsLoading(true);
+
+        data.employeeSigDate = convertLocalToUTC(data.employeeSigDate);
+        data.companySigDate = convertLocalToUTC(data.companySigDate);
+
         const response = (await updateEmployee(data)).data;
 
         if (response.error_code !== 0) {
