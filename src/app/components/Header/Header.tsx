@@ -11,6 +11,7 @@ type Props = {};
 function Header({}: Props) {
   const dispatch = useAppDispatch();
   const notification = useAppSelector((state) => state.data.notification);
+  const isLoggedIn = useAppSelector((state) => state.data.token);
 
   const handleExit = () => {
     localStorage.removeItem("token");
@@ -25,9 +26,11 @@ function Header({}: Props) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: "20px" }}>
             Data Management
           </Typography>
-          <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={handleExit}>
-            Выйти
-          </Button>
+          {isLoggedIn && (
+            <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={handleExit}>
+              Выйти
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Snackbar
